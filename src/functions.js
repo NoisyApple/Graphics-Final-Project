@@ -1,10 +1,10 @@
 import { Vector3 } from "three";
 
-const normalizeRadius = (vector) => {
+const normalizeRadius = (vector, radius) => {
   let { x, y, z } = vector;
   let { p, theta, phi } = rectToSph({ x, y, z });
 
-  p = 1.7320508075689;
+  p = radius;
 
   let normCoords = sphToRect({ p, theta, phi });
 

@@ -1,4 +1,5 @@
 import Polyhedron from "./Polyhedron";
+import { tetrahedronShape, octahedronShape, icosahedronShape } from "./Shapes";
 import "./style.scss";
 import { Scene, PerspectiveCamera, WebGLRenderer, AmbientLight } from "three";
 
@@ -17,12 +18,15 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 document.body.appendChild(renderer.domElement);
 
-const tetrahedron = new Polyhedron();
+// const polyhedron = new Polyhedron(tetrahedronShape());
+const polyhedron = new Polyhedron(icosahedronShape());
 
 scene.add(new AmbientLight());
-scene.add(tetrahedron.mesh);
+scene.add(polyhedron.mesh);
 
-tetrahedron.forwardMorph();
+// polyhedron.forwardMorph();
+// polyhedron.forwardMorph();
+// polyhedron.forwardMorph();
 camera.position.z = 5;
 
 getControls().then(({ OrbitControls }) => {
@@ -34,8 +38,8 @@ getControls().then(({ OrbitControls }) => {
 function animate() {
   requestAnimationFrame(animate);
 
-  tetrahedron.mesh.rotation.x += 0.01;
-  tetrahedron.mesh.rotation.y += 0.01;
+  polyhedron.mesh.rotation.x += 0.01;
+  polyhedron.mesh.rotation.y += 0.01;
 
   renderer.render(scene, camera);
 }
