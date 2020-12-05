@@ -13,18 +13,16 @@ export default class Polyhedron {
   constructor(shape) {
     this.shape = shape;
 
+    this.actualMorph = 0;
+    this.morphs = [{ vertices: this.shape.vertices, faces: this.shape.faces }];
+
     this.geom = new Geometry();
     this.mat = new MeshPhongMaterial({
       color: 0x00ffff,
       wireframe: true,
     });
 
-    this.geom.vertices = this.shape.vertices;
-
-    this.geom.faces = this.shape.faces;
-
-    // this.geom.computeVertexNormals();
-    this.geom.computeFaceNormals();
+    this.update();
 
     this.mesh = new Mesh(
       this.geom,
@@ -33,39 +31,70 @@ export default class Polyhedron {
   }
 
   forwardMorph() {
-    let newFaces = [];
+    if (
+      this.morphs[this.actualMorph + 1] === undefined &&
+      this.actualMorph + 1 < 7
+    ) {
+      let newVertices = [...this.morphs[this.actualMorph].vertices];
+      let newFaces = [];
 
-    this.geom.faces.forEach((face) => {
-      let a = this.geom.vertices[face.a].clone();
-      let b = this.geom.vertices[face.b].clone();
-      let c = this.geom.vertices[face.c].clone();
+      this.geom.faces.forEach((face) => {
+        let a = newVertices[face.a].clone();
+        let b = newVertices[face.b].clone();
+        let c = newVertices[face.c].clone();
 
-      let vIndex = this.geom.vertices.length - 1;
+        let vIndex = newVertices.length - 1;
 
-      let e = normalizeRadius(
-        a.clone().add(b).clone().divide(new Vector3(2, 2, 2)),
-        this.shape.radius
-      );
-      let f = normalizeRadius(
-        b.clone().add(c).clone().divide(new Vector3(2, 2, 2)),
-        this.shape.radius
-      );
-      let g = normalizeRadius(
-        c.clone().add(a).clone().divide(new Vector3(2, 2, 2)),
-        this.shape.radius
-      );
+        let e = normalizeRadius(
+          a.clone().add(b).clone().divide(new Vector3(2, 2, 2)),
+          this.shape.radius
+        );
+        let f = normalizeRadius(
+          b.clone().add(c).clone().divide(new Vector3(2, 2, 2)),
+          this.shape.radius
+        );
+        let g = normalizeRadius(
+          c.clone().add(a).clone().divide(new Vector3(2, 2, 2)),
+          this.shape.radius
+        );
 
-      this.geom.vertices.push(e, f, g);
+        newVertices.push(e, f, g);
 
-      newFaces.push(new Face3(face.a, vIndex + 1, vIndex + 3));
-      newFaces.push(new Face3(face.b, vIndex + 1, vIndex + 2));
-      newFaces.push(new Face3(face.c, vIndex + 2, vIndex + 3));
-      newFaces.push(new Face3(vIndex + 1, vIndex + 1, vIndex + 3));
-    });
+        newFaces.push(new Face3(face.a, vIndex + 1, vIndex + 3));
+        newFaces.push(new Face3(face.b, vIndex + 1, vIndex + 2));
+        newFaces.push(new Face3(face.c, vIndex + 2, vIndex + 3));
+        newFaces.push(new Face3(vIndex + 1, vIndex + 1, vIndex + 3));
+      });
 
-    this.geom.faces = newFaces;
+      this.morphs.push({ vertices: newVertices, faces: newFaces });
+    }
+
+    if (this.actualMorph + 1 < 7) {
+      this.actualMorph += 1;
+      this.update();
+    }
+  }
+
+  backwardMorph() {
+    if (this.morphs[this.actualMorph - 1] !== undefined) {
+      this.actualMorph -= 1;
+      this.update();
+    }
+  }
+
+  update() {
+    this.geom.vertices = this.morphs[this.actualMorph].vertices;
+    this.geom.faces = this.morphs[this.actualMorph].faces;
 
     // this.geom.computeVertexNormals();
     this.geom.computeFaceNormals();
+
+    this.geom.verticesNeedUpdate = true;
+    this.geom.elementsNeedUpdate = true;
+    this.geom.morphTargetsNeedUpdate = true;
+    this.geom.uvsNeedUpdate = true;
+    this.geom.normalsNeedUpdate = true;
+    this.geom.colorsNeedUpdate = true;
+    this.geom.tangentsNeedUpdate = true;
   }
 }

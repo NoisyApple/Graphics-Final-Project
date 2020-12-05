@@ -1,4 +1,83 @@
+@import url("https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap");
+
+* {
+  font-family: "Archivo Black", sans-serif;
+  touch-action: none;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently */
+}
+
 body {
   background-color: #333;
   margin: 0;
+}
+
+#controls {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    45deg,
+    hsl(0, 100%, 70%) 0%,
+    hsl(45, 100%, 70%) 13%,
+    hsl(90, 100%, 70%) 25%,
+    hsl(135, 100%, 70%) 38%,
+    hsl(180, 100%, 70%) 50%,
+    hsl(225, 100%, 70%) 63%,
+    hsl(270, 100%, 70%) 76%,
+    hsl(315, 100%, 70%) 89%,
+    hsl(360, 100%, 70%) 100%
+  );
+  padding: 5px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  display: flex;
+  animation: gradient 15s ease infinite;
+  background-size: 400% 400%;
+
+  .btn {
+    border-radius: 10px;
+    border: none;
+    padding: 5px 10px;
+    outline: none;
+    background: #0002;
+    font-size: 1em;
+    color: #333;
+
+    &:not(:last-child) {
+      margin-right: 10px;
+    }
+
+    &:active {
+      background: #0004;
+    }
+  }
+
+  @keyframes gradient {
+    0% {
+      background-position: 0% 100%;
+    }
+    50% {
+      background-position: 100% 100%;
+    }
+    100% {
+      background-position: 0% 100%;
+    }
+  }
+}
+
+// Desktop.
+@media only screen and (min-width: 768px) {
+  #controls {
+    .btn {
+      &:hover {
+        background: #0006;
+      }
+    }
+  }
 }
