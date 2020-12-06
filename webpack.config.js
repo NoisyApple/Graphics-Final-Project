@@ -18,6 +18,10 @@ module.exports = {
         test: /\.pug$/,
         use: ["pug-loader"],
       },
+      {
+        test: /\.svg$/,
+        use: ["svg-url-loader"],
+      },
     ],
   },
   plugins: [

@@ -9,18 +9,25 @@
   -moz-user-select: none; /* Old versions of Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently */
+  margin: 0;
+  box-sizing: border-box;
 }
 
 body {
   background-color: #333;
-  margin: 0;
 }
 
 #controls {
   position: absolute;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 10px;
+  right: 10px;
+  padding: 5px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+
+  border-radius: 10px;
   background: linear-gradient(
     45deg,
     hsl(0, 100%, 70%) 0%,
@@ -33,12 +40,40 @@ body {
     hsl(315, 100%, 70%) 89%,
     hsl(360, 100%, 70%) 100%
   );
-  padding: 5px;
-  margin-bottom: 20px;
-  border-radius: 10px;
-  display: flex;
   animation: gradient 15s ease infinite;
   background-size: 400% 400%;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+
+  .btn {
+    flex: 1;
+    font-size: 1.5em;
+    height: 35px;
+    padding: 0 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #btnMorphDown {
+    border-radius: 10px 5px 5px 10px;
+    margin-right: 2px;
+  }
+
+  #btnMorphUp {
+    border-radius: 5px 10px 10px 5px;
+    margin-right: 10px;
+  }
+
+  #btnShape,
+  #btnCentralFace {
+    margin-right: 10px;
+  }
+
+  p {
+    margin-right: 10px;
+  }
 
   .btn {
     border-radius: 10px;
@@ -46,11 +81,10 @@ body {
     padding: 5px 10px;
     outline: none;
     background: #0002;
-    font-size: 1em;
-    color: #333;
+    color: #000;
 
-    &:not(:last-child) {
-      margin-right: 10px;
+    img {
+      height: 100%;
     }
 
     &:active {
@@ -74,6 +108,12 @@ body {
 // Desktop.
 @media only screen and (min-width: 768px) {
   #controls {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: 40%;
+    margin-bottom: 20px;
+
     .btn {
       &:hover {
         background: #0006;

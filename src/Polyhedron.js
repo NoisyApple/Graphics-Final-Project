@@ -12,22 +12,17 @@ import { normalizeRadius } from "./functions";
 export default class Polyhedron {
   constructor(shape) {
     this.shape = shape;
+    this.centralFace = false;
 
     this.actualMorph = 0;
     this.morphs = [{ vertices: this.shape.vertices, faces: this.shape.faces }];
 
     this.geom = new Geometry();
-    this.mat = new MeshPhongMaterial({
-      color: 0x00ffff,
-      wireframe: true,
-    });
+    this.mat = new MeshNormalMaterial({ side: DoubleSide });
 
     this.update();
 
-    this.mesh = new Mesh(
-      this.geom,
-      new MeshNormalMaterial({ side: DoubleSide })
-    );
+    this.mesh = new Mesh(this.geom, this.mat);
   }
 
   forwardMorph() {
@@ -63,7 +58,8 @@ export default class Polyhedron {
         newFaces.push(new Face3(face.a, vIndex + 1, vIndex + 3));
         newFaces.push(new Face3(face.b, vIndex + 1, vIndex + 2));
         newFaces.push(new Face3(face.c, vIndex + 2, vIndex + 3));
-        newFaces.push(new Face3(vIndex + 1, vIndex + 1, vIndex + 3));
+        if (this.centralFace)
+          newFaces.push(new Face3(vIndex + 1, vIndex + 2, vIndex + 3));
       });
 
       this.morphs.push({ vertices: newVertices, faces: newFaces });
@@ -96,5 +92,18 @@ export default class Polyhedron {
     this.geom.normalsNeedUpdate = true;
     this.geom.colorsNeedUpdate = true;
     this.geom.tangentsNeedUpdate = true;
+  }
+
+  applyShape(shape) {
+    this.shape = shape;
+
+    this.actualMorph = 0;
+    this.morphs = [{ vertices: this.shape.vertices, faces: this.shape.faces }];
+    this.update();
+  }
+
+  useCentralFace(state) {
+    this.centralFace = state;
+    this.applyShape(this.shape);
   }
 }
